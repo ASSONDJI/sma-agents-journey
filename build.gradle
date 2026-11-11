@@ -1,0 +1,60 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'com.malaika.sma'
+version = '1.0-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+// Inclure le dossier de l'étape 02 comme source
+sourceSets {
+    main {
+        java {
+            srcDirs = ['02-jade-premier-agent/src/main/java']
+        }
+    }
+}
+
+dependencies {
+    // JADE 4.6.1
+    implementation 'de.enflexit.jade:de.enflexit.jade:4.6.1'
+
+    // MaDKit 5.3.2
+    implementation 'io.github.fmichel:MaDKit:5.3.2'
+}
+
+// Tâche pour lancer le HelloAgent
+tasks.register('runHelloAgent', JavaExec) {
+    group = 'application'
+    description = 'Lance le HelloAgent de JADE'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'Main'
+}
+
+// Tâche pour lancer la plateforme JADE avec l'interface graphique
+tasks.register('runJadeGui', JavaExec) {
+    group = 'application'
+    description = 'Lance la plateforme JADE avec interface graphique'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'jade.Boot'
+    args '-gui'
+}
+
+// Tâche pour lancer le bureau MaDKit
+tasks.register('runMadKit', JavaExec) {
+    group = 'application'
+    description = 'Lance le bureau MaDKit'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'madkit.kernel.Madkit'
+    args '--launchAgents', ''
+}
